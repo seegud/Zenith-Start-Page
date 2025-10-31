@@ -1,0 +1,7 @@
+{
+  "name": "Zenith Start Page",
+  "description": "A beautiful and customizable browser start page with Bing's daily wallpaper, local wallpaper support, and a sleek frosted glass design with dark/light mode.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
