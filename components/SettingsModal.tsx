@@ -12,6 +12,8 @@ interface SettingsModalProps {
     onRemoveSearchEngine: (index: number) => void;
     temperatureUnit: TemperatureUnit;
     onTemperatureUnitChange: (unit: TemperatureUnit) => void;
+    wallpaperBlur: number;
+    onWallpaperBlurChange: (blur: number) => void;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ 
@@ -23,7 +25,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     onAddSearchEngine,
     onRemoveSearchEngine,
     temperatureUnit,
-    onTemperatureUnitChange
+    onTemperatureUnitChange,
+    wallpaperBlur,
+    onWallpaperBlurChange
 }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [newEngineName, setNewEngineName] = useState('');
@@ -91,6 +95,22 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                             <BingIcon className="w-5 h-5" />
                             <span>Use Bing Daily</span>
                         </button>
+                    </div>
+                    <div className="mt-4">
+                        <label htmlFor="wallpaper-blur" className="font-medium mb-2 block">Background Blur</label>
+                        <div className="flex items-center space-x-3">
+                           <input
+                                id="wallpaper-blur"
+                                type="range"
+                                min="0"
+                                max="24"
+                                step="1"
+                                value={wallpaperBlur}
+                                onChange={(e) => onWallpaperBlurChange(parseInt(e.target.value, 10))}
+                                className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-white"
+                            />
+                            <span className="text-sm font-mono w-8 text-center">{wallpaperBlur}px</span>
+                        </div>
                     </div>
                 </div>
 

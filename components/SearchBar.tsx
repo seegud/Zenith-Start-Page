@@ -19,13 +19,19 @@ const SearchBar: React.FC<SearchBarProps> = ({ currentEngine, onSearchEngineChan
     const renderEngineIcon = () => {
         if (!currentEngine) return <SearchIcon className="w-5 h-5" />;
         
-        switch (currentEngine.name.toLowerCase()) {
-            case 'google':
-                return <GoogleIcon className="w-5 h-5" />;
-            case 'bing':
-                return <BingIcon className="w-5 h-5" />;
-            default:
-                return <SearchIcon className="w-5 h-5" />;
+        const engineName = currentEngine.name.toLowerCase();
+        if (engineName === 'google') return <GoogleIcon className="w-5 h-5" />;
+        if (engineName === 'bing') return <BingIcon className="w-5 h-5" />;
+
+        try {
+            // Attempt to create a valid URL to extract the hostname for the favicon.
+            const url = new URL(currentEngine.urlTemplate);
+            const faviconUrl = `https://www.google.com/s2/favicons?sz=32&domain_url=${url.hostname}`;
+            return <img src={faviconUrl} alt={`${currentEngine.name} icon`} className="w-5 h-5 rounded-sm object-contain" />;
+        } catch (error) {
+            // If the URL is invalid or another error occurs, fall back to the generic search icon.
+            console.warn(`Could not generate favicon for "${currentEngine.name}"`, error);
+            return <SearchIcon className="w-5 h-5" />;
         }
     };
 

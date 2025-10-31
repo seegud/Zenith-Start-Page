@@ -12,7 +12,7 @@ interface SettingsPanelProps {
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ theme, onThemeToggle, onOpenSettings }) => {
 
     return (
-        <div className="absolute top-4 right-4 flex items-center space-x-2 p-2 rounded-full bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-lg">
+        <div className="absolute top-4 right-4 z-20 flex items-center space-x-2 p-2 rounded-full bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-lg">
             <button
                 onClick={onThemeToggle}
                 className="p-2 rounded-full text-white hover:bg-white/30 dark:hover:bg-black/30 transition-colors"

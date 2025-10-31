@@ -44,6 +44,10 @@ const App: React.FC = () => {
     );
 
     const [wallpaperUrl, setWallpaperUrl] = useState<string | null>(localStorage.getItem('wallpaperUrl'));
+    const [wallpaperBlur, setWallpaperBlur] = useState<number>(() => {
+        const savedBlur = localStorage.getItem('wallpaperBlur');
+        return savedBlur ? parseInt(savedBlur, 10) : 8;
+    });
     const [isLoading, setIsLoading] = useState<boolean>(!wallpaperUrl);
     const [wallpaperInfo, setWallpaperInfo] = useState<string>('');
     
@@ -140,6 +144,10 @@ const App: React.FC = () => {
     useEffect(() => {
         localStorage.setItem('temperatureUnit', temperatureUnit);
     }, [temperatureUnit]);
+    
+    useEffect(() => {
+        localStorage.setItem('wallpaperBlur', wallpaperBlur.toString());
+    }, [wallpaperBlur]);
 
     useEffect(() => {
         localStorage.setItem('searchEngines', JSON.stringify(searchEngines));
@@ -208,6 +216,10 @@ const App: React.FC = () => {
     
     const handleTemperatureUnitChange = (unit: TemperatureUnit) => {
         setTemperatureUnit(unit);
+    };
+    
+    const handleWallpaperBlurChange = (blur: number) => {
+        setWallpaperBlur(blur);
     };
 
     const handleLocationChange = (newLocation: string) => {
@@ -281,13 +293,17 @@ const App: React.FC = () => {
     };
     
     return (
-        <main
-            className="relative h-screen w-screen bg-cover bg-center text-slate-800 dark:text-white transition-all duration-500"
-            style={{ 
-                backgroundImage: wallpaperUrl ? `url(${wallpaperUrl})` : 'none',
-                backgroundColor: theme === 'dark' ? '#111827' : '#f9fafb'
-             }}
-        >
+        <main className="relative h-screen w-screen overflow-hidden text-slate-800 dark:text-white transition-colors duration-500">
+            <div
+                className="absolute inset-0 bg-cover bg-center transition-all duration-300"
+                style={{
+                    backgroundImage: wallpaperUrl ? `url(${wallpaperUrl})` : 'none',
+                    backgroundColor: theme === 'dark' ? '#111827' : '#f9fafb',
+                    filter: `blur(${wallpaperBlur}px)`,
+                    transform: `scale(${1 + wallpaperBlur / 100})`, // Scale up to avoid sharp edges from blur
+                }}
+            />
+            
             {isLoading && (
                 <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
                     <div className="text-white text-2xl animate-pulse">Loading...</div>
@@ -332,6 +348,8 @@ const App: React.FC = () => {
                 onRemoveSearchEngine={handleRemoveSearchEngine}
                 temperatureUnit={temperatureUnit}
                 onTemperatureUnitChange={handleTemperatureUnitChange}
+                wallpaperBlur={wallpaperBlur}
+                onWallpaperBlurChange={handleWallpaperBlurChange}
             />
 
             {wallpaperInfo && (
