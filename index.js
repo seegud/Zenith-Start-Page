@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const elements = {
         wallpaperBg: document.getElementById('wallpaper-bg'),
-        loadingOverlay: document.getElementById('loading-overlay'),
         weather: {
             container: document.getElementById('weather-widget-container'),
             content: document.getElementById('weather-content'),
@@ -268,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // API/Async functions
     const fetchBingWallpaper = async () => {
-        elements.loadingOverlay.classList.remove('hidden');
         setWallpaperInfo('Fetching Bing daily wallpaper...');
         try {
             // Production: use jasonzeng's Bing wallpaper API (CORS-friendly)
@@ -283,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         localStorage.removeItem('wallpaperUrl');
         renderWallpaper();
-        elements.loadingOverlay.classList.add('hidden');
     };
     
     const fetchWeatherData = async () => {
@@ -689,11 +686,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Load wallpaper
         if (!state.wallpaperUrl) {
             fetchBingWallpaper();
-        } else {
-            if (state.wallpaperUrl.startsWith('data:image')) {
-                setWallpaperInfo('Local wallpaper');
-            }
-            elements.loadingOverlay.classList.add('hidden');
+        } else if (state.wallpaperUrl.startsWith('data:image')) {
+            setWallpaperInfo('Local wallpaper');
         }
 
         // Load weather
