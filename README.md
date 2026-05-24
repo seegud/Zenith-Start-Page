@@ -1,85 +1,84 @@
 <div align="center">
 <img width="1200" height="475" alt="Zenith Start Page" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-<h3>A clean, customizable browser start page — your personal dashboard for every new tab.</h3>
+<h3>一款简洁、可定制的浏览器起始页 —— 属于你的新标签页个人仪表盘。</h3>
+<p>A clean, customizable browser start page — your personal dashboard for every new tab.</p>
 </div>
 
 ---
 
-## Zenith Start Page
+## Zenith Start Page · 天顶起始页
+
+将浏览器默认的新标签页替换为一个极简且功能丰富的首页。一个单屏仪表盘，集搜索、时间、天气和每日精美壁纸于一体，为速度和简洁而生。
 
 Replace your browser's default new tab with a minimalist, feature-rich homepage. A single-screen dashboard that brings together search, time, weather, and stunning daily wallpapers — built for speed and simplicity.
 
-### Features
+### 功能特性 · Features
 
-- **Multi-Engine Search Bar** — Switch between Google, Bing, or add your own custom search engines. Real-time search suggestions with keyboard navigation and ARIA accessibility support.
-- **Live Clock & Date** — Clock pauses when the tab is hidden to save CPU, resumes instantly when you come back.
-- **Bing Daily Wallpaper** — Fetches Bing's image of the day on every load. Adjustable background blur with live preview.
-- **Local Weather Widget** — Powered by [wttr.in](https://wttr.in), with geolocation support and a full set of weather condition icons.
-- **Dark / Light Theme** — Manual toggle with system preference detection, persisted across sessions.
-- **Custom Search Engine Manager** — Add, remove, and reorder your favorite search providers. Templates support `%s` placeholder for query injection.
-- **Offline Ready** — Service Worker with smart caching ensures the page loads even without a network connection. Automatic cache updates when new content is available.
-- **Local Wallpaper Upload** — Drag or select your own image; stored efficiently with size limits to protect localStorage quota.
-- **Search History** — Recent queries saved locally with a one-click clear option, capped to prevent storage bloat.
+- **多引擎搜索栏** — 在 Google、Bing 之间一键切换，也可添加自定义搜索引擎。实时搜索建议，支持键盘导航和 ARIA 无障碍访问。
+- **实时时钟与日期** — 标签页隐藏时自动暂停时钟以节省 CPU，切回时立即恢复。
+- **Bing 每日壁纸** — 每次加载自动获取 Bing 当日精选图片。支持实时预览的可调节背景模糊。
+- **本地天气小组件** — 基于 [wttr.in](https://wttr.in)，支持地理定位，配备完整的天气状况图标集。
+- **深色 / 浅色主题** — 手动切换，自动检测系统偏好，设置跨会话持久保存。
+- **自定义搜索引擎管理** — 自由添加、删除、排序你常用的搜索服务。模板支持 `%s` 占位符注入查询关键词。
+- **离线可用** — Service Worker 智能缓存策略确保无网络也能加载页面。新内容发布后自动更新缓存。
+- **本地上传壁纸** — 拖拽或选择自己的图片；带容量限制保护 localStorage 配额。
+- **搜索历史** — 本地保存近期查询记录，一键清除，条目数量有上限防止存储膨胀。
 
-### Tech Stack
+### 技术栈 · Tech Stack
 
-| Layer | Choice |
+| 层面 | 选型 |
 |---|---|
-| Bundler | [Vite 6](https://vite.dev) |
-| Styling | [Tailwind CSS v4](https://tailwindcss.com) |
-| Runtime | Vanilla JavaScript (zero framework overhead) |
-| Offline | Service Worker API |
-| Weather | [wttr.in](https://wttr.in) |
-| Wallpaper | Bing HPImageArchive via proxy |
+| 构建工具 | [Vite 6](https://vite.dev) |
+| 样式方案 | [Tailwind CSS v4](https://tailwindcss.com) |
+| 运行时 | 原生 JavaScript（零框架开销） |
+| 离线支持 | Service Worker API |
+| 天气数据 | [wttr.in](https://wttr.in) |
+| 壁纸来源 | Bing HPImageArchive（开发模式走 Vite 代理，生产模式用公共 API） |
 
-### Getting Started
+### 快速开始 · Getting Started
 
-**Prerequisites:** Node.js 18+
+**环境要求：** Node.js 18+
 
 ```bash
-# 1. Install dependencies
+# 1. 安装依赖
 npm install
 
-# 2. Set your Gemini API key (optional, for AI features)
+# 2. （可选）设置 Gemini API Key，用于 AI 相关功能
 cp .env.local.example .env.local
-# Edit .env.local with your key
+# 编辑 .env.local 填入你的 Key
 
-# 3. Start the dev server
+# 3. 启动开发服务器
 npm run dev
 ```
 
-Open `http://localhost:3000` — that's your new start page.
+打开 `http://localhost:3000` —— 这就是你的新起始页。
 
-### Production Build
+### 生产构建 · Production Build
 
 ```bash
-npm run build      # outputs to dist/
-npm run preview    # preview the production build locally
+npm run build      # 输出到 dist/
+npm run preview    # 本地预览生产版本
 ```
 
-The `dist/` folder is a fully static site — deploy it anywhere: GitHub Pages, Netlify, Vercel, or your own server.
+`dist/` 目录是纯静态站点 —— 可部署到任何平台：GitHub Pages、Netlify、Vercel 或你自己的服务器。
 
-### Browser Setup
+### 设为浏览器起始页 · Browser Setup
 
-Set this as your new tab page:
+- **Chrome / Edge** — 安装 [New Tab Redirect](https://chromewebstore.google.com/detail/new-tab-redirect/icpgjfneehieebagbmdbhnlpiopdcmna) 扩展，将新标签页指向你部署后的 URL。
+- **Firefox** — 原生不支持自定义新标签页 URL，可将其设为浏览器主页。
 
-- **Chrome / Edge** — Install [New Tab Redirect](https://chromewebstore.google.com/detail/new-tab-redirect/icpgjfneehieebagbmdbhnlpiopdcmna) and point it to your deployed URL.
-- **Firefox** — Not natively supported (Firefox restricts custom new tab URLs). Use the page as your homepage instead.
-
-### Project Structure
+### 项目结构 · Project Structure
 
 ```
-├── index.html          # Entry point
-├── index.js            # All application logic
+├── index.html          # 入口页面
+├── index.js            # 全部应用逻辑
 ├── sw.js               # Service Worker
-├── vite.config.ts      # Vite config with dev proxy
+├── vite.config.ts      # Vite 配置（含开发代理）
 ├── src/
-│   └── style.css       # Tailwind imports + custom variants
-├── docs/
-│   └── 代码审查与优化方案.md
-└── dist/               # Production output (gitignored)
+│   └── style.css       # Tailwind 导入 + 自定义变体
+└── dist/               # 生产构建输出（已 gitignore）
 ```
 
-### License
+### 许可 · License
 
 MIT
