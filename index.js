@@ -271,18 +271,20 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.loadingOverlay.classList.remove('hidden');
         setWallpaperInfo('Fetching Bing daily wallpaper...');
         try {
-            let res = await fetch('/api/bing-wallpaper');
+            // Dev proxy (Vite) — will 404 in production, caught below
+            let res = await fetch('./api/bing-wallpaper');
             if (!res.ok) throw new Error('Proxy failed');
             const data = await res.json();
             state.wallpaperUrl = `https://www.bing.com${data.images[0].url}`;
             setWallpaperInfo(data.images[0].copyright);
         } catch {
             try {
-                const res = await fetch('https://bing.biturl.top/?resolution=1920&format=json');
-                if (!res.ok) throw new Error('Fallback API failed');
+                // Production fallback: direct Bing API via JSONP-like image URL
+                const res = await fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US');
+                if (!res.ok) throw new Error('Bing API failed');
                 const data = await res.json();
-                state.wallpaperUrl = data.url;
-                setWallpaperInfo(data.copyright);
+                state.wallpaperUrl = `https://www.bing.com${data.images[0].url}`;
+                setWallpaperInfo(data.images[0].copyright);
             } catch {
                 state.wallpaperUrl = 'https://picsum.photos/1920/1080';
                 setWallpaperInfo('Failed to load Bing wallpaper. Showing a random image.');
