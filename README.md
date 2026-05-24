@@ -79,6 +79,10 @@ npm run preview    # 本地预览生产版本
 └── dist/               # 生产构建输出（已 gitignore）
 ```
 
+### 致谢 · Credits
+
+本项目由 [seegud](https://github.com/seegud) 创建，后期修改与优化由 **DeepSeek v4 Pro** 辅助完成。
+
 ### 许可 · License
 
 MIT
