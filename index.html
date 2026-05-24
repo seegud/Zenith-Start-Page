@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zenith Start Page</title>
+  <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=c9xXfpS6QWwx&format=png&color=000000">
+  <link rel="stylesheet" href="/src/style.css">
+  <script>
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  </script>
+</head>
+<body class="bg-white dark:bg-gray-900">
+  <main class="relative h-screen w-screen overflow-hidden text-slate-800 dark:text-white transition-colors duration-500">
+    <div id="wallpaper-bg" class="absolute inset-0 bg-cover bg-center transition-all duration-300"></div>
+    
+    <div id="loading-overlay" class="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+      <div class="text-white text-2xl animate-pulse">Loading...</div>
+    </div>
+    
+    <div class="absolute inset-0 bg-black bg-opacity-20 dark:bg-opacity-30 transition-opacity"></div>
+    
+    <div id="weather-widget-container" class="absolute top-4 left-4 p-3 rounded-2xl bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-lg text-white transition-all duration-300">
+      <div class="flex flex-col">
+        <div class="flex items-center space-x-2">
+          <form id="location-form" class="hidden">
+            <input
+              type="text"
+              id="location-input"
+              class="bg-transparent text-sm font-semibold outline-none border-b border-white/50 focus:border-white w-28 placeholder-white/70"
+              placeholder="Enter City"
+              aria-label="Enter location for weather"
+            />
+          </form>
+          <button id="location-display" class="text-sm font-semibold text-left hover:opacity-80 transition-opacity" title="Click to change location"></button>
+          <button id="use-geolocation-btn" class="text-white/80 hover:text-white transition-opacity" title="Use current location" aria-label="Use current location">
+             <!-- Location icon will be inserted here -->
+          </button>
+        </div>
+        <div id="weather-content" class="mt-2 h-12 flex items-center">
+          <!-- Weather data will be injected here -->
+        </div>
+      </div>
+    </div>
+
+    <div class="relative z-10 flex flex-col items-center justify-center h-full w-full p-4">
+      <div class="p-8 md:p-12 rounded-2xl bg-white/20 dark:bg-black/20 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-2xl w-full max-w-2xl transition-all duration-300">
+        <div class="text-center">
+          <h1 id="clock-time" class="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight text-white" style="text-shadow: 0 2px 10px rgba(0,0,0,0.5)"></h1>
+          <p id="clock-date" class="text-base md:text-lg mt-2 opacity-90 text-white font-medium" style="text-shadow: 0 1px 5px rgba(0,0,0,0.5)"></p>
+        </div>
+        
+        <div class="w-full mt-8 relative">
+          <form id="search-form" class="w-full" autocomplete="off">
+            <div class="relative flex items-center w-full">
+              <button type="button" id="search-engine-btn" class="absolute left-2 top-1/2 -translate-y-1/2 p-3 text-white/80 hover:text-white transition-colors focus:outline-none rounded-full" aria-label="Switch search engine">
+                <!-- Search engine icon -->
+              </button>
+              <input type="text" id="search-input" placeholder="Search the web or type a URL" class="w-full h-14 bg-white/10 dark:bg-black/10 text-white placeholder-white/60 pl-14 pr-14 py-2 rounded-full border border-transparent focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all text-lg" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-autocomplete="list" aria-controls="suggestions-container" aria-label="Search input" autocomplete="off" autofocus />
+              <button type="submit" class="absolute right-0 top-1/2 -translate-y-1/2 p-4 text-white/80 hover:text-white transition-colors focus:outline-none rounded-full" aria-label="Search">
+                <!-- Search icon -->
+              </button>
+            </div>
+          </form>
+          <div id="suggestions-container" class="absolute top-full mt-2 w-full bg-white/20 dark:bg-black/20 backdrop-blur-lg border border-white/30 dark:border-white/10 rounded-2xl shadow-lg z-20 overflow-hidden hidden" role="listbox" aria-label="Search suggestions">
+            <!-- Suggestions or History will be injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute top-4 right-4 z-20 flex items-center space-x-2 p-2 rounded-full bg-white/20 dark:bg-black/20 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-lg">
+      <button id="theme-toggle-btn" class="p-2 rounded-full text-white hover:bg-white/30 dark:hover:bg-black/30 transition-colors" aria-label="Toggle theme">
+        <!-- Theme icon -->
+      </button>
+      <button id="open-settings-btn" class="p-2 rounded-full text-white hover:bg-white/30 dark:hover:bg-black/30 transition-colors" aria-label="Open settings">
+        <!-- Settings icon -->
+      </button>
+    </div>
+    
+    <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity hidden" aria-modal="true" role="dialog">
+      <div id="settings-modal-content" class="relative p-8 rounded-2xl bg-white/20 dark:bg-black/20 backdrop-blur-xl border border-white/30 dark:border-white/10 shadow-2xl w-full max-w-md text-white transition-all">
+        <button id="close-settings-btn" class="absolute top-4 right-4 p-2 rounded-full text-white/70 hover:bg-white/20 hover:text-white" aria-label="Close settings">
+          <!-- Close icon -->
+        </button>
+        <h2 class="text-2xl font-bold mb-6">Settings</h2>
+        
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-3 border-b border-white/20 pb-2">Wallpaper</h3>
+          <div class="flex space-x-4">
+            <input type="file" id="local-wallpaper-input" class="hidden" accept="image/*" />
+            <button id="upload-wallpaper-btn" class="flex-1 flex items-center justify-center space-x-2 p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+              <!-- Upload icon -->
+              <span>Upload Local</span>
+            </button>
+            <button id="bing-wallpaper-btn" class="flex-1 flex items-center justify-center space-x-2 p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+              <!-- Bing icon -->
+              <span>Use Bing Daily</span>
+            </button>
+          </div>
+          <div class="mt-4">
+            <label for="wallpaper-blur-slider" class="font-medium mb-2 block">Background Blur</label>
+            <div class="flex items-center space-x-3">
+              <input id="wallpaper-blur-slider" type="range" min="0" max="24" step="1" class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer" />
+              <span id="wallpaper-blur-value" class="text-sm font-mono w-8 text-center"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-8">
+          <h3 class="text-lg font-semibold mb-3 border-b border-white/20 pb-2">Weather</h3>
+          <div class="flex items-center justify-between">
+            <label class="font-medium">Temperature Unit</label>
+            <div id="temp-unit-toggle" class="flex rounded-lg p-1 bg-black/20">
+              <button data-unit="F" class="px-4 py-1 rounded-md text-sm font-semibold transition-colors" aria-pressed="true">°F</button>
+              <button data-unit="C" class="px-4 py-1 rounded-md text-sm font-semibold transition-colors" aria-pressed="false">°C</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-semibold mb-3 border-b border-white/20 pb-2">Search Engines</h3>
+          <div id="search-engines-list" class="space-y-2 max-h-40 overflow-y-auto pr-2">
+            <!-- Search engines will be injected here -->
+          </div>
+          <form id="add-engine-form" class="mt-4 pt-4 border-t border-white/20">
+            <h4 class="font-semibold mb-2">Add New Engine</h4>
+            <div class="space-y-3">
+              <input type="text" id="new-engine-name" placeholder="Name (e.g., DuckDuckGo)" class="w-full p-2 rounded-md bg-white/10 placeholder-white/50 border border-transparent focus:outline-none focus:border-white/50" required />
+              <input type="text" id="new-engine-url" placeholder="URL with %s (e.g., https://duckduckgo.com/?q=%s)" class="w-full p-2 rounded-md bg-white/10 placeholder-white/50 border border-transparent focus:outline-none focus:border-white/50" required />
+            </div>
+            <button type="submit" class="w-full mt-3 p-2 rounded-lg bg-blue-500/50 hover:bg-blue-500/70 transition-colors font-semibold">
+              Add Engine
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="wallpaper-info" class="absolute bottom-4 left-4 text-white text-sm bg-black/40 p-2 rounded-md backdrop-blur-sm max-w-xs md:max-w-md text-ellipsis overflow-hidden whitespace-nowrap hidden"></div>
+  </main>
+  
+  <script src="index.js" type="module"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+          console.log('SW registered: ', registration);
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            if (!newWorker) return;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('New content available, please refresh.');
+              }
+            });
+          });
+        }).catch(registrationError => {
+          console.log('SW registration failed: ', registrationError);
+        });
+      });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+      });
+    }
+  </script>
+</body>
+</html>
