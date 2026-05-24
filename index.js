@@ -320,15 +320,47 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const proxyUrl = 'https://corsproxy.io/?';
+        const jsonpFetch = (url) => new Promise((resolve, reject) => {
+            const callbackName = 'zs_cb_' + Date.now();
+            const script = document.createElement('script');
+            const timeout = setTimeout(() => {
+                cleanup();
+                reject(new Error('Timeout'));
+            }, 3000);
+
+            const cleanup = () => {
+                clearTimeout(timeout);
+                delete window[callbackName];
+                if (script.parentNode) script.parentNode.removeChild(script);
+            };
+
+            window[callbackName] = (data) => {
+                cleanup();
+                resolve(data);
+            };
+
+            script.src = url + '&callback=' + callbackName;
+            script.onerror = () => {
+                cleanup();
+                reject(new Error('Network error'));
+            };
+
+            if (signal) {
+                signal.addEventListener('abort', () => {
+                    cleanup();
+                    reject(new DOMException('Aborted', 'AbortError'));
+                });
+            }
+
+            document.head.appendChild(script);
+        });
+
         const apiUrl = engineName === 'google'
-            ? `http://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}`
+            ? `https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}`
             : `https://api.bing.com/osjson.aspx?query=${encodeURIComponent(query)}`;
-        
+
         try {
-            const res = await fetch(`${proxyUrl}${encodeURIComponent(apiUrl)}`, { signal });
-            if (!res.ok) throw new Error('Network error');
-            const data = await res.json();
+            const data = await jsonpFetch(apiUrl);
             state.suggestions = (data[1] || []).slice(0, 6);
         } catch (error) {
             if (error.name !== 'AbortError') {
