@@ -123,13 +123,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderWallpaper = () => {
         if (state.wallpaperUrl) {
             if (state.wallpaperUrl !== preloadedUrl) {
-                preloadedUrl = state.wallpaperUrl;
                 const img = new Image();
                 img.onload = () => {
+                    preloadedUrl = state.wallpaperUrl;
                     elements.wallpaperBg.style.backgroundImage = `url(${state.wallpaperUrl})`;
                 };
                 img.onerror = () => {
+                    preloadedUrl = null;
                     elements.wallpaperBg.style.backgroundImage = 'none';
+                    console.error('Wallpaper failed to load:', state.wallpaperUrl.substring(0, 100));
                 };
                 img.src = state.wallpaperUrl;
             }
