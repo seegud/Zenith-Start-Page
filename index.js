@@ -293,6 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) throw new Error('Location not found');
             const data = await res.json();
             if (data.current_condition) {
+                // Cache weather data for 5 minutes
+                localStorage.setItem('weatherCache', JSON.stringify(data));
+                localStorage.setItem('weatherCacheTime', Date.now().toString());
                 renderWeather(data, null);
             } else {
                 throw new Error('Invalid location data');
@@ -669,7 +672,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.settings.uploadWallpaperBtn.insertAdjacentHTML('afterbegin', Icons.Upload('w-5 h-5'));
         elements.settings.bingWallpaperBtn.insertAdjacentHTML('afterbegin', Icons.Bing('w-5 h-5'));
 
-        // Render initial state
+        // Render initial state immediately
         renderTheme();
         renderWallpaper();
         renderClock();
@@ -685,22 +688,43 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.toggle('hover:bg-white/20', !isPressed);
         });
 
-        // Load wallpaper
+        // Bind event listeners FIRST so settings are always clickable
+        setupEventListeners();
+
+        // Load wallpaper (async, non-blocking)
         if (!state.wallpaperUrl) {
             fetchBingWallpaper();
         } else if (state.wallpaperUrl.startsWith('data:image')) {
             setWallpaperInfo('Local wallpaper');
         }
 
-        // Load weather
-        if (state.location) {
-            fetchWeatherData();
-        } else {
-            requestGeolocation();
-        }
+        // Load weather with cache
+        const loadWeather = () => {
+            const cached = localStorage.getItem('weatherCache');
+            const cachedTime = localStorage.getItem('weatherCacheTime');
+            const now = Date.now();
+            const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-        // Set up all event listeners
-        setupEventListeners();
+            if (cached && cachedTime && (now - parseInt(cachedTime, 10)) < CACHE_TTL) {
+                try {
+                    const data = JSON.parse(cached);
+                    renderWeather(data, null);
+                    // Silently refresh in background
+                    fetchWeatherData();
+                    return;
+                } catch {
+                    localStorage.removeItem('weatherCache');
+                    localStorage.removeItem('weatherCacheTime');
+                }
+            }
+
+            if (state.location) {
+                fetchWeatherData();
+            } else {
+                requestGeolocation();
+            }
+        };
+        loadWeather();
     };
 
     init();
